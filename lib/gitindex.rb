@@ -1,5 +1,3 @@
-require_relative 'gitrepo.rb'
-
 class GithubIndex
 
   attr_reader :path

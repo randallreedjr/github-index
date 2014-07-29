@@ -1,15 +1,21 @@
-require_relative 'gitindex.rb'
-require 'pathname'
 class GitIndexCLI
   attr_reader :directory, :path
+  def initialize
+    @filename = ""
+  end
+
   def call
-    greeting
-    input = gets.chomp
-    if input.downcase != "exit"
-      directory_from_input(input)
-      determine_path
-      filename = create_file
-      `open #{filename}`
+    if !mac_OS?
+      puts "Sorry, this gem is only compatible with Mac OS"
+    else
+      greeting
+      input = gets.chomp
+      if input.downcase != "exit"
+        directory_from_input(input)
+        determine_path
+        create_file
+        `open #{@filename}`
+      end
     end
   end
 
@@ -29,10 +35,22 @@ class GitIndexCLI
   end
 
   def create_file
-    file = "#{path}/index.html"
+    #file = "#{path}/index.html"
+    if !Dir.exists?('/tmp/gitindex')
+      FileUtils::mkdir_p '/tmp/gitindex'
+    end
+    @filename = '/tmp/gitindex/index.html'
     puts "Mapping #{path}..."
-    $stdout.reopen(file, "w")
+    output_message
+    $stdout.reopen(@filename, "w")
     GithubIndex.new(path).generate_index
-    return file
+  end
+
+  def output_message
+    puts "If results do not automatically open, type 'open #{@filename}'"
+  end
+
+  def mac_OS?
+    return ((/darwin/ =~ RbConfig::CONFIG["arch"]) != nil)
   end
 end

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require_relative '../lib/gitindexcli.rb'
-
+#require_relative '../lib/gitindexcli.rb'
+require_relative '../config/environment.rb'
 cli = GitIndexCLI.new
 cli.call
